@@ -1,12 +1,13 @@
 "use client";
 
 import { authClient } from "@/lib/authClient";
-import { LogOut } from "lucide-react";
+import { LogIn, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 function NavBar() {
+  const { data: session, isPending } = authClient.useSession();
   const pathName = usePathname();
   const router = useRouter();
   const [loggingOut, setIsLoggingOut] = useState(false);
@@ -44,18 +45,28 @@ function NavBar() {
           </Link>
         </div>
       </div>
-
-      <button
-        disabled={loggingOut}
-        className={`text-lg text-red-500 ${loggingOut && "hover:cursor-wait"} flex gap-2 items-center hover:cursor-pointer hover:bg-red-300 transition-colors p-2 bg-red-200 rounded-lg`}
-        onClick={(e) => {
-          e.preventDefault();
-          handleLogout();
-        }}
-      >
-        <LogOut />
-        Log Out
-      </button>
+      {session ? (
+        <button
+          disabled={loggingOut}
+          className={`text-lg text-red-500 ${loggingOut && "hover:cursor-wait"} flex gap-2 items-center hover:cursor-pointer hover:bg-red-300 transition-colors p-2 bg-red-200 rounded-lg`}
+          onClick={(e) => {
+            e.preventDefault();
+            handleLogout();
+          }}
+        >
+          <LogOut />
+          Log Out
+        </button>
+      ) : (
+        <Link href={"/login"}>
+          <button
+            className={`text-lg  flex gap-2 items-center hover:cursor-pointer hover:bg-gray-100 transition-colors p-2 bg-white rounded-lg`}
+          >
+            <LogIn />
+            Log In
+          </button>
+        </Link>
+      )}
     </div>
   );
 }
