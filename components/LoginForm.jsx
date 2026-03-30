@@ -3,6 +3,7 @@
 import { authClient } from "@/lib/authClient";
 import loginReducer from "@/reducers/loginReducer";
 import { Eye, EyeClosed } from "lucide-react";
+import GoogleIcon from "@mui/icons-material/Google";
 import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useState } from "react";
 import toast from "react-hot-toast";
@@ -37,6 +38,22 @@ function LoginForm() {
         onSuccess: (ctx) => {
           router.replace("/");
         },
+        onError: (ctx) => {
+          toast.error("Error logging in!");
+        },
+      },
+    );
+    setLoading(false);
+  }
+
+  async function googleLogin() {
+    setLoading(true);
+    const { data, error } = await authClient.signIn.social(
+      {
+        provider: "google",
+        callbackURL: "/",
+      },
+      {
         onError: (ctx) => {
           toast.error("Error logging in!");
         },
@@ -110,8 +127,14 @@ function LoginForm() {
               Login
             </button>
             <p className="mt-4">OR</p>
-            <button className="mt-2 p-2 bg-red-500 text-white w-full rounded-lg hover:bg-red-600 hover:transition-colors hover:cursor-pointer">
-              Continue with G
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                googleLogin();
+              }}
+              className="mt-2 p-2 bg-red-500 flex items-center justify-center gap-2 text-white w-full rounded-lg hover:bg-red-600 hover:transition-colors hover:cursor-pointer"
+            >
+              Continue with <GoogleIcon />
             </button>
           </form>
           <p className="mt-12 flex gap-2">

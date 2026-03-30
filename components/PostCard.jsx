@@ -24,7 +24,7 @@ function PostCard({ post }) {
   const queryClient = useQueryClient();
   const session = authClient.useSession();
   const userQuery = useQuery({
-    queryKey: ["user"],
+    queryKey: [post.userId],
     queryFn: () => getUser(post.userId),
   });
   const likeMutation = useMutation({

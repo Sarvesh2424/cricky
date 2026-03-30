@@ -3,9 +3,10 @@
 import { authClient } from "@/lib/authClient";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 function NavBar() {
+  const pathName = usePathname();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -21,13 +22,17 @@ function NavBar() {
   };
 
   return (
-    <div className="bg-violet-900 min-w-screen p-4 flex items-center justify-between shadow-2xl">
+    <div className="bg-violet-900 max-w-screen p-4 flex items-center justify-between shadow-2xl">
       <div className="flex items-center gap-12">
         <h1 className="text-white text-5xl">Cricky!</h1>
         <div className="flex items-center gap-4">
-          <button className="text-white text-lg">Home</button>
+          <Link href="/">
+            <button className="text-white text-lg hover:cursor-pointer">Home</button>
+            {pathName=="/" && <hr className="text-white w-full"/>}
+          </Link>
           <Link href={"/feed"}>
-            <button className="text-white text-lg">Feed</button>
+            <button className="text-white text-lg hover:cursor-pointer">Feed</button>
+            {pathName=="/feed" && <hr className="text-white w-full hx `"/>}
           </Link>
         </div>
       </div>
