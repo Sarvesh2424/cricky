@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "post" ALTER COLUMN "likes" SET DEFAULT ARRAY[]::TEXT[];

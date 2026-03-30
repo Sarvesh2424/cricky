@@ -1,6 +1,8 @@
 "use client";
 
 import { authClient } from "@/lib/authClient";
+import { LogOut } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 function NavBar() {
@@ -19,14 +21,25 @@ function NavBar() {
   };
 
   return (
-    <div className="bg-violet-900 min-w-screen p-4">
+    <div className="bg-violet-900 min-w-screen p-4 flex items-center justify-between shadow-2xl">
+      <div className="flex items-center gap-12">
         <h1 className="text-white text-5xl">Cricky!</h1>
+        <div className="flex items-center gap-4">
+          <button className="text-white text-lg">Home</button>
+          <Link href={"/feed"}>
+            <button className="text-white text-lg">Feed</button>
+          </Link>
+        </div>
+      </div>
+
       <button
+        className="text-lg text-red-500 flex gap-2 items-center hover:cursor-pointer hover:bg-red-300 transition-colors p-2 bg-red-200 rounded-lg"
         onClick={(e) => {
           e.preventDefault();
           handleLogout();
         }}
       >
+        <LogOut />
         Log Out
       </button>
     </div>
