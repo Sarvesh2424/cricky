@@ -77,11 +77,12 @@ function NewPostForm() {
             placeholder="Enter content..."
           />
           <button
+            disabled={postMutation.isPending}
             onClick={(e) => {
               e.preventDefault();
               handlePost();
             }}
-            className="p-2 rounded-lg hover:bg-violet-950 hover:cursor-pointer transition-colors bg-violet-900 text-white"
+            className={`p-2 rounded-lg hover:bg-violet-950 hover:cursor-pointer transition-colors bg-violet-900 text-white ${postMutation.isPending && "hover:cursor-wait"}`}
             type="submit"
           >
             Post
