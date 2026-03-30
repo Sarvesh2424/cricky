@@ -9,7 +9,7 @@ export async function GET() {
     return NextResponse.json(posts);
   } catch (err) {
     return NextResponse.json(
-      { message: "Error fetching posts" },
+      { message: "Error fetching posts" + err.message },
       { status: 400 },
     );
   }
