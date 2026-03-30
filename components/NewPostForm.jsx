@@ -39,6 +39,7 @@ function NewPostForm() {
   });
 
   const handlePost = () => {
+    console.log(session);
     if (!postFormState.title || !postFormState.content) {
       toast.error("Title or content cannot be empty!");
       return;
@@ -46,7 +47,7 @@ function NewPostForm() {
     postMutation.mutate({
       title: postFormState.title,
       content: postFormState.content,
-      userId: session.data.session.userId,
+      userId: session.user.id,
     });
   };
 
