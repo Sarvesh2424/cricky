@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useState } from "react";
 import toast from "react-hot-toast";
 
+let regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 function LoginForm() {
   const { data: session, isPending } = authClient.useSession();
   const [loginState, dispatch] = useReducer(loginReducer, {
@@ -74,7 +76,7 @@ function LoginForm() {
       ) : (
         <>
           <h1 className="text-black text-3xl">Login</h1>
-          <form className="flex flex-col items-center justify-center text-black mt-12 gap-2">
+          <form className="flex flex-col w-1/2 items-center justify-center text-black mt-12 gap-2">
             <label className="w-full text-left">Email</label>
             <div className="w-full">
               <input
@@ -84,12 +86,15 @@ function LoginForm() {
                 value={loginState.email}
                 type="email"
                 placeholder="Enter email..."
-                className="border border-black p-2 rounded-lg "
+                className="border w-full border-black p-2 rounded-lg "
               />
             </div>
+            {loginState.email && !regex.test(loginState.email) && (
+              <p className="text-red-500 w-full">Enter a valid email</p>
+            )}
 
             <label className="mt-2 text-left w-full">Password</label>
-            <div className="flex gap-2">
+            <div className="w-full relative">
               <input
                 onChange={(e) =>
                   dispatch({ type: "SET_PASSWORD", password: e.target.value })
@@ -97,15 +102,16 @@ function LoginForm() {
                 value={loginState.password}
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter password..."
-                className="border border-black p-2 rounded-lg"
-              />
+                className="border w-full border-black p-2 rounded-lg pr-12"
+              >
+              </input>
               {showPassword ? (
                 <button
                   onClick={(e) => {
                     e.preventDefault();
                     setShowPassword((prev) => !prev);
                   }}
-                  className="hover:cursor-pointer"
+                  className="absolute right-3 top-2 hover:cursor-pointer"
                 >
                   <EyeClosed />
                 </button>
@@ -115,7 +121,7 @@ function LoginForm() {
                     e.preventDefault();
                     setShowPassword((prev) => !prev);
                   }}
-                  className="hover:cursor-pointer"
+                  className="absolute right-3 top-2 hover:cursor-pointer"
                 >
                   <Eye />
                 </button>
@@ -123,11 +129,12 @@ function LoginForm() {
             </div>
 
             <button
+              disabled={!regex.test(loginState.email)}
               onClick={(e) => {
                 e.preventDefault();
                 emailLogin();
               }}
-              className={`bg-green-500 rounded-lg p-2 w-full ${loading && "hover:cursor-wait"} text-white mt-4 hover:bg-green-600 hover:transition-colors hover:cursor-pointer`}
+              className={`bg-green-500 rounded-lg p-2 disabled:bg-gray-500 w-full ${loading && "hover:cursor-wait"} text-white mt-4 hover:bg-green-600 hover:transition-colors hover:cursor-pointer`}
             >
               Login
             </button>

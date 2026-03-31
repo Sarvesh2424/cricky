@@ -5,8 +5,10 @@ import registerReducer from "@/reducers/registerReducer";
 import { Eye, EyeClosed } from "lucide-react";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import toast from "react-hot-toast";
+
+let regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 function RegisterForm() {
   const { data: session, isPending } = authClient.useSession();
@@ -87,7 +89,7 @@ function RegisterForm() {
       ) : (
         <>
           <h1 className="text-black text-3xl">Register</h1>
-          <form className="flex flex-col items-center justify-center text-black mt-12 gap-2">
+          <form className="flex flex-col w-1/2 items-center justify-center text-black mt-12 gap-2">
             <label className="w-full text-left">Email</label>
             <div className="w-full">
               <input
@@ -97,12 +99,15 @@ function RegisterForm() {
                 value={registerState.email}
                 type="email"
                 placeholder="Enter email..."
-                className="border border-black p-2 rounded-lg "
+                className="border w-full border-black p-2 rounded-lg "
               />
             </div>
+            {registerState.email && !regex.test(registerState.email) && (
+              <p className="text-red-500 w-full">Enter a valid email</p>
+            )}
 
             <label className="mt-2 text-left w-full">Password</label>
-            <div className="flex gap-2">
+            <div className="w-full relative">
               <input
                 onChange={(e) =>
                   dispatch({ type: "SET_PASSWORD", password: e.target.value })
@@ -110,7 +115,7 @@ function RegisterForm() {
                 value={registerState.password}
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter password..."
-                className="border border-black p-2 rounded-lg"
+                className="border w-full border-black p-2 rounded-lg pr-12"
               />
               {showPassword ? (
                 <button
@@ -118,7 +123,7 @@ function RegisterForm() {
                     e.preventDefault();
                     setShowPassword((prev) => !prev);
                   }}
-                  className="hover:cursor-pointer"
+                  className=" absolute right-3 top-2 hover:cursor-pointer"
                 >
                   <EyeClosed />
                 </button>
@@ -128,14 +133,14 @@ function RegisterForm() {
                     e.preventDefault();
                     setShowPassword((prev) => !prev);
                   }}
-                  className="hover:cursor-pointer"
+                  className="absolute right-3 top-2 hover:cursor-pointer"
                 >
                   <Eye />
                 </button>
               )}
             </div>
             <label className="mt-2 text-left w-full">Confirm Password</label>
-            <div className="flex gap-2">
+            <div className="w-full relative">
               {" "}
               <input
                 onChange={(e) =>
@@ -144,7 +149,7 @@ function RegisterForm() {
                 value={registerState.confirm}
                 type={showConfirm ? "text" : "password"}
                 placeholder="Confirm password..."
-                className="border border-black p-2 rounded-lg"
+                className="border w-full border-black p-2 rounded-lg pr-12"
               />
               {showConfirm ? (
                 <button
@@ -152,7 +157,7 @@ function RegisterForm() {
                     e.preventDefault();
                     setShowConfirm((prev) => !prev);
                   }}
-                  className="hover:cursor-pointer"
+                  className="absolute right-3 top-2  hover:cursor-pointer"
                 >
                   <EyeClosed />
                 </button>
@@ -162,18 +167,28 @@ function RegisterForm() {
                     e.preventDefault();
                     setShowConfirm((prev) => !prev);
                   }}
-                  className="hover:cursor-pointer"
+                  className="absolute right-3 top-2 hover:cursor-pointer"
                 >
                   <Eye />
                 </button>
               )}
             </div>
+            {registerState.confirm &&
+              registerState.password !== registerState.confirm && (
+                <p className="text-red-500 w-full">Passwords do not match!</p>
+              )}
             <button
+              disabled={
+                regex.test(registerState.email) ||
+                !registerState.password ||
+                (registerState.confirm &&
+                  registerState.password !== registerState.confirm)
+              }
               onClick={(e) => {
                 e.preventDefault();
                 emailRegister();
               }}
-              className={`bg-green-500 rounded-lg p-2 w-full text-white mt-4 hover:bg-green-600 hover:transition-colors hover:cursor-pointer ${loading && "hover:cursor-wait"}`}
+              className={`bg-green-500 rounded-lg p-2 w-full disabled:bg-gray-500 text-white mt-4 hover:bg-green-600 hover:transition-colors hover:cursor-pointer ${loading && "hover:cursor-wait"}`}
             >
               Register
             </button>
