@@ -40,6 +40,7 @@ function PostCard({ post }) {
   const [tempLike, setTempLike] = useState(
     post.likes.includes(session?.data?.session?.userId),
   );
+  const [likesCount, setLikesCount] = useState(post.likes.length);
 
   return (
     <>
@@ -61,6 +62,7 @@ function PostCard({ post }) {
                     onClick={(e) => {
                       e.preventDefault();
                       setTempLike(false);
+                      setLikesCount((prev) => prev - 1);
                       likeMutation.mutate({
                         id: post.id,
                         likes: post.likes.filter(
@@ -78,6 +80,7 @@ function PostCard({ post }) {
                     onClick={(e) => {
                       e.preventDefault();
                       setTempLike(true);
+                      setLikesCount((prev) => prev + 1);
                       likeMutation.mutate({
                         id: post.id,
                         likes: [...post.likes, session?.data?.session?.userId],
@@ -88,7 +91,7 @@ function PostCard({ post }) {
                   </button>
                 )}
 
-                <p>{post.likes.length}</p>
+                <p>{likesCount}</p>
               </div>
               <p>{dayjs(post.createdAt).fromNow()}</p>
             </div>
