@@ -29,6 +29,11 @@ function LoginForm() {
 
   async function emailLogin() {
     setLoading(true);
+    if (!loginState.email || !loginState.password) {
+      toast.error("Email or password cannot be empty!");
+      setLoading(false);
+      return;
+    }
     const { data, error } = await authClient.signIn.email(
       {
         email: loginState.email,

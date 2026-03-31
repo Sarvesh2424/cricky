@@ -39,9 +39,16 @@ function NewPostForm() {
   });
 
   const handlePost = () => {
-    console.log(session);
     if (!postFormState.title || !postFormState.content) {
       toast.error("Title or content cannot be empty!");
+      return;
+    }
+    if (postFormState.title.length > 50) {
+      toast.error("Title cannot be more than 50 characters!");
+      return;
+    }
+    if (postFormState.content.length > 500) {
+      toast.error("Content cannote be more than 500 characters!");
       return;
     }
     postMutation.mutate({
@@ -54,25 +61,25 @@ function NewPostForm() {
   return (
     <>
       {session && (
-        <form className="flex flex-col w-1/4 gap-4 rounded-xl border border-gray-300 bg-gray-100 p-4 h-max">
+        <form className="flex flex-col w-1/4 gap-2  rounded-xl border border-gray-300 bg-gray-100 p-4 h-max">
           <h1 className="text-2xl">Share your "CRICKY" thoughts!</h1>
-          <label>Title</label>
+          <label className="mt-8">Title</label>
           <input
             onChange={(e) =>
               dispatch({ type: "SET_TITLE", title: e.target.value })
             }
             value={postFormState.title}
-            className="border p-2 border-black rounded-lg"
+            className="border p-2 focus:ring-2 focus:border-none focus:outline-none focus:ring-violet-900 border-black rounded-lg"
             type="text"
             placeholder="Enter title..."
           />
-          <label>Content</label>
+          <label className="mt-4">Content</label>
           <textarea
             onChange={(e) =>
               dispatch({ type: "SET_CONTENT", content: e.target.value })
             }
             value={postFormState.content}
-            className="border p-2 border-black rounded-lg"
+            className="border p-2 focus:ring-2 focus:border-none focus:outline-none focus:ring-violet-900 border-black rounded-lg"
             rows={5}
             placeholder="Enter content..."
           />
@@ -82,10 +89,10 @@ function NewPostForm() {
               e.preventDefault();
               handlePost();
             }}
-            className={`p-2 rounded-lg hover:bg-violet-950 hover:cursor-pointer transition-colors bg-violet-900 text-white ${postMutation.isPending && "hover:cursor-wait"}`}
+            className={`p-2 mt-4 rounded-lg hover:bg-violet-950 hover:cursor-pointer transition-colors bg-violet-900 text-white ${postMutation.isPending && "hover:cursor-wait"}`}
             type="submit"
           >
-            Post
+            {postMutation.isPending ? "Posting..." : "Post"}
           </button>
         </form>
       )}

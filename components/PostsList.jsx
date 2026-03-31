@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import PostCard from "./PostCard";
 import { authClient } from "@/lib/authClient";
+import PostSkeleton from "./PostSkeleton";
 
 async function getPosts() {
   const response = await fetch("/api/get-posts");
@@ -27,7 +28,11 @@ function PostsList() {
           ) : (
             <>
               {postsQuery.isPending ? (
-                <div className="rounded-full animate-spin w-10 h-10 border-2 border-l-0 border-black"></div>
+                <div className="flex flex-col gap-4 w-1/3">
+                  {[1, 2, 3, 4].map((post) => (
+                    <PostSkeleton key={post} />
+                  ))}
+                </div>
               ) : (
                 <>
                   {postsQuery.data.length === 0 ? (

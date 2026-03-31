@@ -35,6 +35,15 @@ function RegisterForm() {
       return;
     }
     setLoading(true);
+    if (
+      !registerState.email ||
+      !registerState.password ||
+      !registerState.confirm
+    ) {
+      toast.error("Email or password cannot be empty!");
+      setLoading(false);
+      return;
+    }
     const name = registerState.email.split("@")[0];
     const { data, error } = await authClient.signUp.email(
       {
