@@ -52,7 +52,7 @@ function PostsList() {
                 </>
               )}
               {addMode && (
-                <div className="bg-black opacity-50 z-10 fixed top-0 left-0  h-screen w-screen"></div>
+                <div className="bg-black md:hidden opacity-50 z-10 fixed top-0 left-0  h-screen w-screen"></div>
               )}
             </>
           )}
