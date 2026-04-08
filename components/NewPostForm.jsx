@@ -3,8 +3,10 @@
 import { authClient } from "@/lib/authClient";
 import postReducer from "@/reducers/postReducer";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useReducer } from "react";
+import { X } from "lucide-react";
+import { useContext, useReducer } from "react";
 import toast from "react-hot-toast";
+import { modeContext } from "./QueryProvider";
 
 async function post(postData) {
   const response = await fetch("/api/add-post", {
@@ -15,6 +17,7 @@ async function post(postData) {
 }
 
 function NewPostForm() {
+  const { addMode, setAddMode } = useContext(modeContext);
   const queryClient = useQueryClient();
   const { data: session, isPending } = authClient.useSession();
   const [postFormState, dispatch] = useReducer(postReducer, {
@@ -29,6 +32,7 @@ function NewPostForm() {
         dispatch({ type: "SET_TITLE", title: "" });
         dispatch({ type: "SET_CONTENT", content: "" });
         queryClient.invalidateQueries({ queryKey: ["posts"] });
+        setAddMode((prev) => !prev);
       } else {
         toast.error("Cannot post!");
       }
@@ -61,40 +65,85 @@ function NewPostForm() {
   return (
     <>
       {session && (
-        <form className="flex flex-col w-1/4 gap-2  rounded-xl border border-gray-300 bg-gray-100 p-4 h-max">
-          <h1 className="text-2xl">Share your "CRICKY" thoughts!</h1>
-          <label className="mt-8">Title</label>
-          <input
-            onChange={(e) =>
-              dispatch({ type: "SET_TITLE", title: e.target.value })
-            }
-            value={postFormState.title}
-            className="border p-2 focus:ring-2 focus:border-none focus:outline-none focus:ring-violet-900 border-black rounded-lg"
-            type="text"
-            placeholder="Enter title..."
-          />
-          <label className="mt-4">Content</label>
-          <textarea
-            onChange={(e) =>
-              dispatch({ type: "SET_CONTENT", content: e.target.value })
-            }
-            value={postFormState.content}
-            className="border p-2 focus:ring-2 focus:border-none focus:outline-none focus:ring-violet-900 border-black rounded-lg"
-            rows={5}
-            placeholder="Enter content..."
-          />
-          <button
-            disabled={postMutation.isPending}
-            onClick={(e) => {
-              e.preventDefault();
-              handlePost();
-            }}
-            className={`p-2 mt-4 rounded-lg hover:bg-violet-950 hover:cursor-pointer transition-colors bg-violet-900 text-white ${postMutation.isPending && "hover:cursor-wait"}`}
-            type="submit"
+        <>
+          <form className="md:flex flex-col hidden gap-2  rounded-xl border border-gray-300 bg-gray-100 p-4 h-max">
+            <h1 className="text-2xl">Share your "CRICKY" thoughts!</h1>
+            <label className="mt-8">Title</label>
+            <input
+              onChange={(e) =>
+                dispatch({ type: "SET_TITLE", title: e.target.value })
+              }
+              value={postFormState.title}
+              className="border p-2 focus:ring-2 focus:border-none focus:outline-none focus:ring-violet-900 border-black rounded-lg"
+              type="text"
+              placeholder="Enter title..."
+            />
+            <label className="mt-4">Content</label>
+            <textarea
+              onChange={(e) =>
+                dispatch({ type: "SET_CONTENT", content: e.target.value })
+              }
+              value={postFormState.content}
+              className="border p-2 focus:ring-2 focus:border-none focus:outline-none focus:ring-violet-900 border-black rounded-lg"
+              rows={5}
+              placeholder="Enter content..."
+            />
+            <button
+              disabled={postMutation.isPending}
+              onClick={(e) => {
+                e.preventDefault();
+                handlePost();
+              }}
+              className={`p-2 mt-4 rounded-lg hover:bg-violet-950 hover:cursor-pointer transition-colors bg-violet-900 text-white ${postMutation.isPending && "hover:cursor-wait"}`}
+              type="submit"
+            >
+              {postMutation.isPending ? "Posting..." : "Post"}
+            </button>
+          </form>
+
+          <form
+            className={`flex fixed bottom-0 w-screen left-0 flex-col ${addMode ? "translate-y-0" : "translate-y-full"} transition-transform ease-out duration-300 md:hidden gap-2 z-20 rounded-t-2xl border border-gray-300 bg-gray-100 p-4 h-max`}
           >
-            {postMutation.isPending ? "Posting..." : "Post"}
-          </button>
-        </form>
+            <button
+              onClick={() => setAddMode((prev) => !prev)}
+              className="font-bold text-red-500"
+            >
+              <X />
+            </button>
+            <h1 className="text-2xl mt-4">Share your "CRICKY" thoughts!</h1>
+            <label className="mt-8">Title</label>
+            <input
+              onChange={(e) =>
+                dispatch({ type: "SET_TITLE", title: e.target.value })
+              }
+              value={postFormState.title}
+              className="border p-2 focus:ring-2 focus:border-none focus:outline-none focus:ring-violet-900 border-black rounded-lg"
+              type="text"
+              placeholder="Enter title..."
+            />
+            <label className="mt-4">Content</label>
+            <textarea
+              onChange={(e) =>
+                dispatch({ type: "SET_CONTENT", content: e.target.value })
+              }
+              value={postFormState.content}
+              className="border p-2 focus:ring-2 focus:border-none focus:outline-none focus:ring-violet-900 border-black rounded-lg"
+              rows={5}
+              placeholder="Enter content..."
+            />
+            <button
+              disabled={postMutation.isPending}
+              onClick={(e) => {
+                e.preventDefault();
+                handlePost();
+              }}
+              className={`p-2 mt-4 rounded-lg hover:bg-violet-950 hover:cursor-pointer transition-colors bg-violet-900 text-white ${postMutation.isPending && "hover:cursor-wait"}`}
+              type="submit"
+            >
+              {postMutation.isPending ? "Posting..." : "Post"}
+            </button>
+          </form>
+        </>
       )}
     </>
   );
